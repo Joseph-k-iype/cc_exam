@@ -31,9 +31,14 @@ def downloads(request):
     s3 = boto3.resource('s3')
     #create a bucket and make it public
     s3.create_bucket(Bucket='hospital-data-2147220')
-    #upload all files in the documents folder to the s3 bucket
+    #upload documents/* to the bucket
+    #list all the files in the documents folder
     for file in os.listdir('/home/joseph/Desktop/cc_exam/documents/documents'):
-        s3.Object('hospital-data-2147220', file).put(Body=open('/'+file, 'rb'))
+        #upload the files to the bucket
+        s3.Bucket('hospital-data-2147220').put_object(Key=file, Body=open('/home/joseph/Desktop/cc_exam/documents/documents/'+file, 'rb'))
+        #make the files public
+        object_acl = s3.ObjectAcl('hospital-data-2147220', file)
+        response = object_acl.put(ACL='public-read')
     #make the files public
 
 
